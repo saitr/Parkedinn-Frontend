@@ -73,7 +73,6 @@
 //       console.error('Error:', error);
 //     }
 //   };
-  
 
 //   const handleCreateParkingLot = async () => {
 //     try {
@@ -141,31 +140,31 @@
 
 // export default Map;
 
-
-import React, { useState, useEffect } from 'react';
-import axiosInstance from '../axios';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../axios";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Map = () => {
   const navigate = useNavigate(); // Initialize useNavigate
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [description, setDescription] = useState("");
   const [markerPosition, setMarkerPosition] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [parkingType, setParkingType] = useState("INDOOR");
 
   useEffect(() => {
     // Get the user's current location using the geolocation API
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        position => {
+        (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation({ lat: latitude, lng: longitude });
         },
-        error => {
-          console.error('Error getting current location:', error);
+        (error) => {
+          console.error("Error getting current location:", error);
         }
       );
     }
@@ -178,7 +177,10 @@ const Map = () => {
         zoom: 19,
       };
 
-      const map = new window.google.maps.Map(document.getElementById('map'), mapOptions);
+      const map = new window.google.maps.Map(
+        document.getElementById("map"),
+        mapOptions
+      );
 
       const marker = new window.google.maps.Marker({
         map,
@@ -186,7 +188,7 @@ const Map = () => {
         draggable: true,
       });
 
-      marker.addListener('dragend', handleMarkerDragEnd);
+      marker.addListener("dragend", handleMarkerDragEnd);
     }
   }, [markerPosition]);
 
@@ -198,8 +200,8 @@ const Map = () => {
       const { lat, lng } = response.data.results[0].geometry.location;
       setMarkerPosition({ lat, lng });
     } catch (error) {
-      alert('Please Give Correct Coordinates')
-      console.error('Error:', error);
+      alert("Please Give Correct Coordinates");
+      console.error("Error:", error);
     }
   };
 
@@ -217,27 +219,27 @@ const Map = () => {
         setAddress(firstResult.formatted_address);
       }
     } catch (error) {
-      alert(error)
-      console.error('Error:', error);
+      alert(error);
+      console.error("Error:", error);
     }
   };
 
   useEffect(() => {
-    if (!localStorage.getItem('refresh_token')) {
+    if (!localStorage.getItem("refresh_token")) {
       // Navigate to login if no refresh token
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        position => {
+        (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation([latitude, longitude]);
         },
-        error => {
-          alert('Error Getting current location')
-          console.error('Error getting current location:', error);
+        (error) => {
+          alert("Error Getting current location");
+          console.error("Error getting current location:", error);
         }
       );
     }
@@ -247,32 +249,35 @@ const Map = () => {
     try {
       if (markerPosition && name && address && description && imageFile) {
         const formData = new FormData();
-        formData.append('name', name);
-        formData.append('address', address);
-        formData.append('description', description);
-        formData.append('latitude', markerPosition.lat);
-        formData.append('longitude', markerPosition.lng);
-        formData.append('image', imageFile);
+        formData.append("name", name);
+        formData.append("address", address);
+        formData.append("description", description);
+        formData.append("latitude", markerPosition.lat);
+        formData.append("longitude", markerPosition.lng);
+        formData.append("image", imageFile);
+        formData.append("parking_type", parkingType);
 
-        await axiosInstance.post('/parking_lot_create/', formData);
+        await axiosInstance.post("/parking_lot_create/", formData);
         // Handle success or navigation after successful creation
-        alert('Parking lot created successfully');
-        setName('');
-        setAddress('');
-        setDescription('');
+        alert("Parking lot created successfully");
+        window.location.reload();
+        setName("");
+        setAddress("");
+        setDescription("");
         setMarkerPosition(null);
         setImageFile(null);
+        setParkingType("INDOOR");
       } else {
-        alert('Please fill in all fields and select an image.');
+        alert("Please fill in all fields and select an image.");
       }
     } catch (error) {
-      alert('You are not authorized to create the parking lot.');
-      console.error('Error:', error);
+      alert("You are not authorized to create the parking lot.");
+      console.error("Error:", error);
     }
   };
 
   return (
-    <div className='map-div'>
+    <div className="map-div">
       <div className="input-container">
         <input
           type="text"
@@ -297,15 +302,27 @@ const Map = () => {
           accept="image/*"
           onChange={(e) => setImageFile(e.target.files[0])}
         />
+        <select
+          className="select-parking-type"
+          style={{ padding: "1%" }}
+          value={parkingType}
+          onChange={(e) => setParkingType(e.target.value)}>
+          <option value="INDOOR">Indoor</option>
+          <option value="OUTDOOR">Outdoor</option>
+        </select>
       </div>
-      <div id="map" style={{ height: '400px' }}></div>
+      <div id="map" style={{ height: "400px" }}></div>
       <div className="text-center">
-      <button className="parking-confirm-btn" onClick={handleConfirm}>Set Marker</button>
-      {markerPosition && (
-        
-        <button className="parking-confirm-btn" onClick={handleCreateParkingLot}>Confirm Parking Lot</button>
-        
-      )}
+        <button className="parking-confirm-btn m-3" onClick={handleConfirm}>
+          Set Marker
+        </button>
+        {markerPosition && (
+          <button
+            className="parking-confirm-btn m-3"
+            onClick={handleCreateParkingLot}>
+            Confirm Parking Lot
+          </button>
+        )}
       </div>
     </div>
   );
