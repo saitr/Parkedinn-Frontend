@@ -1,6 +1,6 @@
 import React,{useEffect} from 'react'
 import Background from "../Common/Background"
-import Feature from "../Common/Feature"
+// import Feature from "../Common/Feature"
 import WhyChoose from "../Common/WhyChoose"
 import Service from "../Common/Service"
 import Client from "../Common/Client"
@@ -23,7 +23,7 @@ function Home() {
 
     <AllLocations/>
 
-  <Feature/>
+  {/* <Feature/> */}
   <WhyChoose/>
   <Service/>
   <Client/>

@@ -332,7 +332,7 @@
 // export default ParkingLotDetails;
 
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import {
   GoogleMap,
   LoadScript,
@@ -359,6 +359,8 @@ function ParkingLotDetails() {
   const [parkingLotCoordinates, setParkingLotCoordinates] = useState(null);
   const [directions, setDirections] = useState(null);
   const [parkingLotDetails, setParkingLotDetails] = useState(null); // New state for parking lot details
+  const location = useLocation();
+
 
   useEffect(() => {
     // Fetch user's location
@@ -386,6 +388,7 @@ function ParkingLotDetails() {
     try {
       const response = await axiosInstance.get(`parking-lots/${id}/`);
       const parkingLot = response.data;
+      console.log('parkinglot data',parkingLot)
       setParkingLotCoordinates({
         lat: parkingLot.latitude,
         lng: parkingLot.longitude,
@@ -440,8 +443,10 @@ function ParkingLotDetails() {
     }
   };
 
+
   return (
     <div>
+      
       <div
         style={{
           display: "flex",
@@ -452,7 +457,7 @@ function ParkingLotDetails() {
           <div
             style={{ padding: "2%", justifyContent: "center" }}
             className="heading_container">
-            <h2>Nearby Parking Lots</h2>
+            <h2>Parking Lot</h2>
           </div>
           {/* <h1>Parking Lot Details</h1> */}
           {parkingLotDetails && (
@@ -471,11 +476,18 @@ function ParkingLotDetails() {
                   Available Slots: {parkingLotDetails.available_slots}
                 </strong>
               </h5>
+              <h5>
+                <strong>
+                  Parking Lot Type: {parkingLotDetails.parking_type}
+                </strong>
+              </h5>
             </div>
           )}
         </div>
       </div>
-      <div>
+     
+        <>
+        <div>
         <div className="text-center">
           {directions && (
             <iframe
@@ -498,7 +510,11 @@ function ParkingLotDetails() {
           Show Directions
         </button>
       </div>
+      </>
+      
+      
     </div>
+    
   );
 }
 

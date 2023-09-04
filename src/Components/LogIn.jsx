@@ -74,13 +74,28 @@ const LogIn = () => {
         localStorage.setItem('access_token', res.data.access);
         localStorage.setItem('refresh_token', res.data.refresh);
         console.log('Login Successful');
-        navigate('/');
+        
+        // Now, check the user status
+        axiosInstance
+          .get('check_user_status/')
+          .then((statusRes) => {
+            if (statusRes.data.is_staff_or_superuser) {
+              navigate('/allparkinglots');
+            } else {
+              navigate('/');
+            }
+          })
+          .catch((error) => {
+            alert('Error checking user status');
+            console.error(error);
+          });
       })
       .catch((error) => {
         alert('Please enter correct email for login');
         console.error(error);
       });
-  };
+};
+
 
   return (
     

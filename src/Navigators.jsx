@@ -18,6 +18,10 @@ import AllParkingSlot from './ParkingComponents/AllParkingSlots'
 import ParkingSlotDetail from './ParkingComponents/ParkingSlotDetail'
 import TotalBookings from './Components/TotalBookings'
 import IndividualBookings from './Components/IndividualBookings'
+import BillingCreate from './ParkingComponents/BillingCreate'
+import AdminSignupForm from './Admin/AdminSignUp'
+import StaffSignupForm from './Admin/StaffSignUp'
+import ParkingSlotCreate from './ParkingComponents/ParkingSlotCreate'
 // import { BookingProvider } from './ParkingComponents/BookingContext'
 
 function Navigators() {
@@ -41,6 +45,10 @@ function Navigators() {
         <Route path='/parkingslotdetail/:id' element={<ParkingSlotDetail/>}/>
         <Route path='/total_bookings' element={<TotalBookings/>}/>
         <Route path='/user_billing' element={<IndividualBookings/>}/>
+        <Route path='/parking_rates' element={<BillingCreate/>}/>
+        <Route path='/admin-signup' element={<AdminSignupForm/>}/>
+        <Route path='/staff-signup' element={<StaffSignupForm/>}/>
+        <Route path='/parking-slot-create' element={<ParkingSlotCreate/>}/>
     </Routes>
     <Footer/>
     </>
